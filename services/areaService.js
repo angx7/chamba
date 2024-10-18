@@ -1,6 +1,4 @@
 const areas = require('../lib/areaLib');
-const departamento = require('../services/departamentoService');
-const departamentosService = new departamento();
 
 class areasService {
   constructor() {
@@ -34,6 +32,8 @@ class areasService {
       throw new Error(`El área con ID ${id} no existe.`);
     }
 
+    const departamento = require('../services/departamentoService');
+    const departamentosService = new departamento();
     const areaAsignada = departamentosService.getAll().some((area) => {
       return area.area.clave == id;
     });

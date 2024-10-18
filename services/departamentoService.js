@@ -1,8 +1,6 @@
 const departamentos = require('../lib/departamentosLib');
 const encargados = require('../lib/encargadoLib');
 const areas = require('../lib/areaLib');
-const empleados = require('../services/empleadoService');
-const empleadoService = new empleados();
 
 class departamentosService {
   constructor() {
@@ -33,6 +31,8 @@ class departamentosService {
     if (!departamento) {
       throw new Error(`El departamento con ID ${id} no existe.`);
     }
+    const empleados = require('../services/empleadoService');
+    const empleadoService = new empleados();
     const departamentoClave = id;
     const empleadoAsignado = empleadoService.getAll().some((empleado) => {
       const departamentosEmpleado = [

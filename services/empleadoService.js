@@ -1,7 +1,5 @@
 const departamentos = require('../lib/departamentosLib');
 const nombreEmpleado = require('../lib/empleadosLib');
-const DepartamentoService = require('../services/departamentoService');
-const departamentosService = new DepartamentoService();
 
 function seleccionarDepartamentosAleatorios(departamentos) {
   const seleccionados = [];
@@ -126,6 +124,9 @@ class empleadoService {
     const empleadoEliminar = this.empleados.findIndex(
       (item) => item.numeroEmpleado == id
     );
+
+    const departamentoService = require('../services/departamentoService');
+    const departamentos = new departamentoService();
     if (empleadoEliminar !== -1) {
       this.empleados.splice(empleadoEliminar, 1);
       return empleadoEliminar;
