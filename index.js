@@ -7,6 +7,10 @@ app.use(express.json());
 
 routerApi(app);
 
+app.get('/', (req, res) => {
+  res.send('Hola mi servidor en Express');
+});
+
 app.listen(port, () => {
   console.log('My port is working on: ' + port);
 });
