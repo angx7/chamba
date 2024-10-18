@@ -6,7 +6,11 @@ const service = new departamentosService();
 router.get('/', (req, res) => {
   const { id } = req.query;
   const departamentos = id ? service.getById(id) : service.getAll();
-  res.json(departamentos);
+  if (departamentos) {
+    res.status(200).json(departamentos);
+  } else {
+    res.status(404).json({ message: 'No hay un departamentos con ese ID' });
+  }
 });
 
 module.exports = router;

@@ -13,7 +13,7 @@ class departamentosService {
         numeroDepartamento: index,
         nombre: departamentos[index],
         encargado: encargados[index],
-        area: areas[index],
+        area: areas[index] + ', clave de área: ' + index,
       });
     }
   }

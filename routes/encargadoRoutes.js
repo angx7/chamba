@@ -6,7 +6,11 @@ const service = new encargadosService();
 router.get('/', (req, res) => {
   const { id } = req.query;
   const encargados = id ? service.getById(id) : service.getAll();
-  res.json(encargados);
+  if (encargados) {
+    res.status(200).json(encargados);
+  } else {
+    res.status(404).json({ message: 'No hay un encargado con ese ID' });
+  }
 });
 
 module.exports = router;

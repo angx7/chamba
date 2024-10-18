@@ -8,7 +8,11 @@ router.get('/', (req, res) => {
   const { id } = req.query;
 
   const empleados = id ? service.getById(id) : service.getAll();
-  res.json(empleados);
+  if (empleados) {
+    res.status(200).json(empleados);
+  } else {
+    res.status(404).json({ message: 'No hay un empleado con ese ID' });
+  }
 });
 
 router.post('/', (req, res) => {

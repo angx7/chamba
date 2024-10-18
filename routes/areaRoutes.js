@@ -6,6 +6,10 @@ const service = new areasService();
 router.get('/', (req, res) => {
   const { id } = req.query;
   const areas = id ? service.getById(id) : service.getAll();
-  res.json(areas);
+  if (areas) {
+    res.status(200).json(areas);
+  } else {
+    res.status(404).json({ message: 'Error ' });
+  }
 });
 module.exports = router;
