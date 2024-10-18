@@ -17,19 +17,9 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const nuevoEmpleado = req.body;
-  const existe = empleados.find(
-    (empleados) => empleados.numeroEmpleado === nuevoEmpleado.numeroEmpleado
-  );
-  if (existe) {
-    return res
-      .status(400)
-      .json({ message: 'El numero de Empleado que quieres, ya existe' });
-  }
-  empleados.push(nuevoEmpleado);
-  res.json({
-    message: 'El empleado ha sido agregado',
-    nuevoEmpleado: nuevoEmpleado,
-  });
+  try {
+    service.agregarEmpleado(nuevoEmpleado);
+  } catch (error) {}
 });
 
 router.delete('/', (req, res) => {

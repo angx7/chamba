@@ -3,6 +3,7 @@ const encargados = require('../lib/encargadoLib');
 const areas = require('../lib/areaLib');
 const empleados = require('../services/empleadoService');
 const empleadoService = new empleados();
+
 class departamentosService {
   constructor() {
     this.departamentos = [];
@@ -14,7 +15,7 @@ class departamentosService {
         numeroDepartamento: index,
         nombre: departamentos[index],
         encargado: encargados[index],
-        area: areas[index] + ', clave de área: ' + index,
+        area: { nombre: areas[index], clave: index },
       });
     }
   }

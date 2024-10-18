@@ -1,6 +1,7 @@
 const encargados = require('../lib/encargadoLib');
+
 const departamentos = require('../services/departamentoService');
-const departementosService = new departamentos();
+const departamentosService = new departamentos();
 
 class encargadosService {
   constructor() {
@@ -27,6 +28,27 @@ class encargadosService {
     return this.encargados.find((item) => item.idEncargado == id);
   }
 
-  delete(id) {}
+  delete(id) {
+    const encargado = this.getById(id);
+    if (!encargado) {
+      throw new Error(`El encargado con ID ${id} no existe`);
+    }
+    const encargadoAsignado = departamentosService
+      .getAll()
+      .some((departamento) => departamento.encargado.id == id);
+    if (encargadoAsignado) {
+      throw new Error(
+        'No se puede eliminar a este encargado porque esta asignado a un departamento'
+      );
+    }
+    const index = this.encargados.findIndex(
+      (encargado) => encargado.idEncargado == id
+    );
+    console.log(index);
+    if (index !== -1) {
+      this.encargados.splice(index, 1);
+    }
+    return { id };
+  }
 }
 module.exports = encargadosService;
