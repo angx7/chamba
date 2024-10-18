@@ -1,4 +1,6 @@
 const encargados = require('../lib/encargadoLib');
+const departamentos = require('../services/departamentoService');
+const departementosService = new departamentos();
 
 class encargadosService {
   constructor() {
@@ -24,5 +26,7 @@ class encargadosService {
   getById(id) {
     return this.encargados.find((item) => item.idEncargado == id);
   }
+
+  delete(id) {}
 }
 module.exports = encargadosService;

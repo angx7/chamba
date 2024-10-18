@@ -32,18 +32,18 @@ class empleadoService {
         apellido: nombreEmpleado[index].apellido,
         edad: Math.floor(Math.random() * 10) + 18,
         genero: nombreEmpleado[index].genero,
-        departamento_1:
-          departamentosAleatorios[0] +
-          ', clave del departamento: ' +
-          claveDepartamento[0],
-        departamento_2:
-          departamentosAleatorios[1] +
-          ', clave del departamento: ' +
-          claveDepartamento[1],
-        departamento_3:
-          departamentosAleatorios[2] +
-          ', clave del departamento: ' +
-          claveDepartamento[2],
+        departamento_1: {
+          nombre: departamentosAleatorios[0],
+          clave: claveDepartamento[0],
+        },
+        departamento_2: {
+          nombre: departamentosAleatorios[1],
+          clave: claveDepartamento[1],
+        },
+        departamento_3: {
+          nombre: departamentosAleatorios[2],
+          clave: claveDepartamento[2],
+        },
       });
     }
   }
@@ -54,6 +54,18 @@ class empleadoService {
 
   getById(id) {
     return this.empleados.find((item) => item.numeroEmpleado == id);
+  }
+
+  delete(id) {
+    const empleadoEliminar = this.empleados.findIndex(
+      (item) => item.numeroEmpleado == id
+    );
+    if (empleadoEliminar !== -1) {
+      this.empleados.splice(empleadoEliminar, 1);
+      return empleadoEliminar;
+    } else {
+      return empleadoEliminar;
+    }
   }
 }
 module.exports = empleadoService;

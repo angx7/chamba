@@ -32,4 +32,16 @@ router.post('/', (req, res) => {
   });
 });
 
+router.delete('/', (req, res) => {
+  const { id } = req.query;
+  const eliminar = service.delete(id);
+  if (eliminar !== -1) {
+    res.status(200).json({ message: 'Se ha eliminado correctamente' });
+  } else {
+    res
+      .status(404)
+      .json({ message: 'El empleado que intetas eliminar no existe' });
+  }
+});
+
 module.exports = router;

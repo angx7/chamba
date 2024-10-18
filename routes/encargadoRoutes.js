@@ -13,4 +13,9 @@ router.get('/', (req, res) => {
   }
 });
 
+router.delete('/', (req, res) => {
+  const { id } = req.query;
+  service.delete(id);
+});
+
 module.exports = router;
