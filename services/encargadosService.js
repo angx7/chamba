@@ -28,6 +28,60 @@ class encargadosService {
     return this.encargados.find((item) => item.idEncargado == id);
   }
 
+  createEncargado(nuevoEncargado) {
+    if (
+      !nuevoEncargado.nombre ||
+      !nuevoEncargado.Estudio ||
+      !nuevoEncargado.Turno
+    ) {
+      throw new Error('El cuerpo del nuevo encargado no está completo');
+    }
+    const idEncargado = this.encargados.length;
+    const encargado = {
+      idEncargado,
+      nombre: nuevoEncargado.nombre,
+      Estudio: nuevoEncargado.Estudio,
+      Turno: nuevoEncargado.Turno,
+    };
+    this.encargados.push(encargado);
+    return encargado;
+  }
+
+  updateEncargado(id, updatedFields) {
+    const encargado = this.getById(id);
+    if (!encargado) {
+      throw new Error(`El encargado con ID ${id} no existe`);
+    }
+
+    const { nombre, Estudio, Turno } = updatedFields;
+
+    if (nombre === undefined && Estudio === undefined && Turno === undefined) {
+      throw new Error('No se proporcionaron campos para actualizar');
+    }
+
+    if (nombre !== undefined && nombre.trim() === '') {
+      throw new Error('El campo nombre no puede estar vacío');
+    }
+    if (Estudio !== undefined && Estudio.trim() === '') {
+      throw new Error('El campo Estudio no puede estar vacío');
+    }
+    if (Turno !== undefined && Turno.trim() === '') {
+      throw new Error('El campo Turno no puede estar vacío');
+    }
+
+    if (nombre !== undefined) {
+      encargado.nombre = nombre;
+    }
+    if (Estudio !== undefined) {
+      encargado.Estudio = Estudio;
+    }
+    if (Turno !== undefined) {
+      encargado.Turno = Turno;
+    }
+
+    return encargado;
+  }
+
   delete(id) {
     const encargado = this.getById(id);
     if (!encargado) {

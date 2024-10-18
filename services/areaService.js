@@ -11,7 +11,7 @@ class areasService {
       this.areas.push({
         idArea: index,
         Nombre: areas[index],
-        edificio: 'Número de edificio ' + Math.floor(Math.random() * 10) + 1,
+        edificio: Math.floor(Math.random() * 10) + 1,
       });
     }
   }
@@ -24,7 +24,47 @@ class areasService {
     return this.areas.find((item) => item.idArea == id);
   }
 
-  create() {}
+  create(body) {
+    const { Nombre, edificio } = body;
+
+    if (!Nombre || !edificio) {
+      throw new Error('El cuerpo de la petición no esta completa');
+    }
+
+    const newArea = {
+      idArea: this.areas.length,
+      Nombre,
+      edificio,
+    };
+
+    this.areas.push(newArea);
+    return newArea;
+  }
+
+  update(id, body) {
+    const area = this.getById(id);
+    if (!area) {
+      throw new Error(`El área con ID ${id} no existe.`);
+    }
+
+    const { Nombre, edificio } = body;
+
+    if (Nombre !== undefined) {
+      if (Nombre.trim() === '') {
+        throw new Error('El campo Nombre no puede estar vacío.');
+      }
+      area.Nombre = Nombre;
+    }
+
+    if (edificio !== undefined) {
+      if (typeof edificio !== 'number' || isNaN(edificio)) {
+        throw new Error('El campo edificio debe ser un número válido.');
+      }
+      area.edificio = edificio;
+    }
+
+    return area;
+  }
 
   delete(id) {
     const area = this.getById(id);
