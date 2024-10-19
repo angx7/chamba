@@ -43,7 +43,7 @@ router.patch('/', (req, res) => {
       .status(200)
       .json({ message: 'Empleado actualizado', data: empleadoActualizado });
   } catch (error) {
-    if (error.message.includes('no encontrado')) {
+    if (error.message.includes('no existe')) {
       res.status(404).json({ message: error.message });
     } else if (error.message.includes('cuerpo correcto')) {
       res.status(400).json({ message: error.message });

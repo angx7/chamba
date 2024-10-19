@@ -155,14 +155,12 @@ class empleadoService {
         datosActualizados.departamento_1,
         'departamento_1'
       );
-      const departamento1Existe = departamentosService
-        .getAll()
-        .some(
-          (departamento) =>
-            departamento.numeroDepartamento ===
-              datosActualizados.departamento_1.clave &&
-            departamento.nombre === datosActualizados.departamento_1.nombre
-        );
+      const departamento1Existe = DepartamentosService.getAll().some(
+        (departamento) =>
+          departamento.numeroDepartamento ===
+            datosActualizados.departamento_1.clave &&
+          departamento.nombre === datosActualizados.departamento_1.nombre
+      );
       if (!departamento1Existe) {
         throw new Error('El departamento_1 no existe');
       }
@@ -174,14 +172,12 @@ class empleadoService {
         datosActualizados.departamento_2,
         'departamento_2'
       );
-      const departamento2Existe = departamentosService
-        .getAll()
-        .some(
-          (departamento) =>
-            departamento.numeroDepartamento ===
-              datosActualizados.departamento_2.clave &&
-            departamento.nombre === datosActualizados.departamento_2.nombre
-        );
+      const departamento2Existe = DepartamentosService.getAll().some(
+        (departamento) =>
+          departamento.numeroDepartamento ===
+            datosActualizados.departamento_2.clave &&
+          departamento.nombre === datosActualizados.departamento_2.nombre
+      );
       if (!departamento2Existe) {
         throw new Error('El departamento_2 no existe');
       }
