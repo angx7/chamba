@@ -14,8 +14,8 @@ class encargadosService {
       this.encargados.push({
         idEncargado: index,
         nombre: encargados[index].nombre,
-        Estudio: encargados[index].estudio,
-        Turno: encargados[index].turno,
+        estudio: encargados[index].estudio,
+        turno: encargados[index].turno,
       });
     }
   }
@@ -31,8 +31,8 @@ class encargadosService {
   createEncargado(nuevoEncargado) {
     if (
       !nuevoEncargado.nombre ||
-      !nuevoEncargado.Estudio ||
-      !nuevoEncargado.Turno
+      !nuevoEncargado.estudio ||
+      !nuevoEncargado.turno
     ) {
       throw new Error('El cuerpo del nuevo encargado no está completo');
     }
@@ -40,8 +40,8 @@ class encargadosService {
     const encargado = {
       idEncargado,
       nombre: nuevoEncargado.nombre,
-      Estudio: nuevoEncargado.Estudio,
-      Turno: nuevoEncargado.Turno,
+      estudio: nuevoEncargado.estudio,
+      turno: nuevoEncargado.turno,
     };
     this.encargados.push(encargado);
     return encargado;
@@ -53,30 +53,30 @@ class encargadosService {
       throw new Error(`El encargado con ID ${id} no existe`);
     }
 
-    const { nombre, Estudio, Turno } = updatedFields;
+    const { nombre, estudio, turno } = updatedFields;
 
-    if (nombre === undefined && Estudio === undefined && Turno === undefined) {
+    if (nombre === undefined && estudio === undefined && turno === undefined) {
       throw new Error('No se proporcionaron campos para actualizar');
     }
 
     if (nombre !== undefined && nombre.trim() === '') {
       throw new Error('El campo nombre no puede estar vacío');
     }
-    if (Estudio !== undefined && Estudio.trim() === '') {
-      throw new Error('El campo Estudio no puede estar vacío');
+    if (estudio !== undefined && estudio.trim() === '') {
+      throw new Error('El campo estudio no puede estar vacío');
     }
-    if (Turno !== undefined && Turno.trim() === '') {
-      throw new Error('El campo Turno no puede estar vacío');
+    if (turno !== undefined && turno.trim() === '') {
+      throw new Error('El campo turno no puede estar vacío');
     }
 
     if (nombre !== undefined) {
       encargado.nombre = nombre;
     }
-    if (Estudio !== undefined) {
-      encargado.Estudio = Estudio;
+    if (estudio !== undefined) {
+      encargado.estudio = estudio;
     }
-    if (Turno !== undefined) {
-      encargado.Turno = Turno;
+    if (turno !== undefined) {
+      encargado.turno = turno;
     }
 
     return encargado;
@@ -92,13 +92,12 @@ class encargadosService {
       .some((departamento) => departamento.encargado.id == id);
     if (encargadoAsignado) {
       throw new Error(
-        'No se puede eliminar a este encargado porque esta asignado a un departamento'
+        'No se puede eliminar a este encargado porque esta asignado a un departamento',
       );
     }
     const index = this.encargados.findIndex(
-      (encargado) => encargado.idEncargado == id
+      (encargado) => encargado.idEncargado == id,
     );
-    console.log(index);
     if (index !== -1) {
       this.encargados.splice(index, 1);
     }

@@ -10,7 +10,7 @@ class areasService {
     for (let index = 0; index < areas.length; index++) {
       this.areas.push({
         idArea: index,
-        Nombre: areas[index],
+        nombre: areas[index],
         edificio: Math.floor(Math.random() * 10) + 1,
       });
     }
@@ -25,15 +25,15 @@ class areasService {
   }
 
   create(body) {
-    const { Nombre, edificio } = body;
+    const { nombre, edificio } = body;
 
-    if (!Nombre || !edificio) {
+    if (!nombre || !edificio) {
       throw new Error('El cuerpo de la petición no esta completa');
     }
 
     const newArea = {
       idArea: this.areas.length,
-      Nombre,
+      nombre,
       edificio,
     };
 
@@ -47,13 +47,13 @@ class areasService {
       throw new Error(`El área con ID ${id} no existe.`);
     }
 
-    const { Nombre, edificio } = body;
+    const { nombre, edificio } = body;
 
-    if (Nombre !== undefined) {
-      if (Nombre.trim() === '') {
-        throw new Error('El campo Nombre no puede estar vacío.');
+    if (nombre !== undefined) {
+      if (nombre.trim() === '') {
+        throw new Error('El campo nombre no puede estar vacío.');
       }
-      area.Nombre = Nombre;
+      area.nombre = nombre;
     }
 
     if (edificio !== undefined) {
@@ -80,7 +80,7 @@ class areasService {
 
     if (areaAsignada) {
       throw new Error(
-        'No se puede eliminar esta área porque hay departamentos en ella'
+        'No se puede eliminar esta área porque hay departamentos en ella',
       );
     }
 

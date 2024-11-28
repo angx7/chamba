@@ -82,24 +82,24 @@ class empleadoService {
       (departamento) =>
         departamento.numeroDepartamento ===
           nuevoEmpleado.departamento_1.clave &&
-        departamento.nombre === nuevoEmpleado.departamento_1.nombre
+        departamento.nombre === nuevoEmpleado.departamento_1.nombre,
     );
     const departamento2Existe = departamentosData.some(
       (departamento) =>
         departamento.numeroDepartamento ===
           nuevoEmpleado.departamento_2.clave &&
-        departamento.nombre === nuevoEmpleado.departamento_2.nombre
+        departamento.nombre === nuevoEmpleado.departamento_2.nombre,
     );
     const departamento3Existe = departamentosData.some(
       (departamento) =>
         departamento.numeroDepartamento ===
           nuevoEmpleado.departamento_3.clave &&
-        departamento.nombre === nuevoEmpleado.departamento_3.nombre
+        departamento.nombre === nuevoEmpleado.departamento_3.nombre,
     );
 
     if (!departamento1Existe || !departamento2Existe || !departamento3Existe) {
       throw new Error(
-        'Algo salio mal porque uno o más departamentos no existen'
+        'Algo salio mal porque uno o más departamentos no existen',
       );
     }
 
@@ -133,14 +133,14 @@ class empleadoService {
       typeof departamento.clave !== 'number'
     ) {
       throw new Error(
-        `Algo salio mal porque el ${nombreDepartamento} no tiene el cuerpo correcto`
+        `Algo salio mal porque el ${nombreDepartamento} no tiene el cuerpo correcto`,
       );
     }
   }
 
   modificarEmpleado(id, datosActualizados) {
     const empleadoIndex = this.empleados.findIndex(
-      (item) => item.numeroEmpleado == id
+      (item) => item.numeroEmpleado == id,
     );
 
     if (empleadoIndex === -1) {
@@ -153,13 +153,13 @@ class empleadoService {
     if (datosActualizados.departamento_1) {
       this.validarDepartamento(
         datosActualizados.departamento_1,
-        'departamento_1'
+        'departamento_1',
       );
       const departamento1Existe = DepartamentosService.getAll().some(
         (departamento) =>
           departamento.numeroDepartamento ===
             datosActualizados.departamento_1.clave &&
-          departamento.nombre === datosActualizados.departamento_1.nombre
+          departamento.nombre === datosActualizados.departamento_1.nombre,
       );
       if (!departamento1Existe) {
         throw new Error('El departamento_1 no existe');
@@ -170,13 +170,13 @@ class empleadoService {
     if (datosActualizados.departamento_2) {
       this.validarDepartamento(
         datosActualizados.departamento_2,
-        'departamento_2'
+        'departamento_2',
       );
       const departamento2Existe = DepartamentosService.getAll().some(
         (departamento) =>
           departamento.numeroDepartamento ===
             datosActualizados.departamento_2.clave &&
-          departamento.nombre === datosActualizados.departamento_2.nombre
+          departamento.nombre === datosActualizados.departamento_2.nombre,
       );
       if (!departamento2Existe) {
         throw new Error('El departamento_2 no existe');
@@ -187,13 +187,13 @@ class empleadoService {
     if (datosActualizados.departamento_3) {
       this.validarDepartamento(
         datosActualizados.departamento_3,
-        'departamento_3'
+        'departamento_3',
       );
       const departamento3Existe = DepartamentosService.getAll().some(
         (departamento) =>
           departamento.numeroDepartamento ===
             datosActualizados.departamento_3.clave &&
-          departamento.nombre === datosActualizados.departamento_3.nombre
+          departamento.nombre === datosActualizados.departamento_3.nombre,
       );
       if (!departamento3Existe) {
         throw new Error('El departamento_3 no existe');
@@ -211,7 +211,7 @@ class empleadoService {
 
   delete(id) {
     const empleadoEliminar = this.empleados.findIndex(
-      (item) => item.numeroEmpleado == id
+      (item) => item.numeroEmpleado == id,
     );
 
     const departamentoService = require('../services/departamentoService');
@@ -224,4 +224,5 @@ class empleadoService {
     }
   }
 }
+
 module.exports = empleadoService;

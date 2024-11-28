@@ -57,7 +57,7 @@ class departamentosService {
     // Validar que el área y el encargado existan
     const areaExists = areas
       .getAll()
-      .find((item) => item.idArea == area.clave && item.Nombre == area.nombre);
+      .find((item) => item.idArea == area.clave && item.nombre == area.nombre);
     const encargadoExists = Encargados.getById(encargado.id);
 
     if (!areaExists) {
@@ -124,7 +124,7 @@ class departamentosService {
     // Validar que el área y el encargado existan
     const areaExists = areas
       .getAll()
-      .find((item) => item.idArea == area.clave && item.Nombre == area.nombre);
+      .find((item) => item.idArea == area.clave && item.nombre == area.nombre);
     const encargadoExists = Encargados.getById(encargado.id);
 
     if (!areaExists) {
@@ -165,13 +165,13 @@ class departamentosService {
 
     if (empleadoAsignado) {
       throw new Error(
-        'No se puede eliminar el departamento porque hay empleados asignados a él.'
+        'No se puede eliminar el departamento porque hay empleados asignados a él.',
       );
     }
 
     // Encontrar el índice del departamento
     const index = this.departamentos.findIndex(
-      (departamento) => departamento.numeroDepartamento === id
+      (departamento) => departamento.numeroDepartamento === id,
     );
 
     // Eliminar el departamento si no hay empleados asignados

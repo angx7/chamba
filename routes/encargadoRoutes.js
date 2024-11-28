@@ -54,4 +54,177 @@ router.delete('/', (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * tags:
+ *   name: Encargados
+ *   description: API para gestionar los encargados
+ */
+
+/**
+ * @swagger
+ * /encargados:
+ *   get:
+ *     summary: Obtener todos los encargados o un encargado por ID
+ *     description: Obtiene todos los encargados o un encargado específico utilizando un ID
+ *     tags: [Encargados]
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         description: ID del encargado (opcional)
+ *         required: false
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de encargados o un encargado específico
+ *         content:
+ *           application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                id:
+ *                  type: number
+ *                nombre:
+ *                  type: string
+ *                estudio:
+ *                  type: string
+ *                turno:
+ *                  type: string
+ *       404:
+ *         description: No se encontraron encargados
+ */
+
+/**
+ * @swagger
+ * /encargados:
+ *   post:
+ *     summary: Crear un nuevo encargado
+ *     description: Crea un nuevo encargado con los datos proporcionados
+ *     tags: [Encargados]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               estudio:
+ *                 type: string
+ *               turno:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Encargado creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de éxito
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     nombre:
+ *                       type: string
+ *                     estudio:
+ *                       type: string
+ *                     turno:
+ *                       type: string
+ *       400:
+ *         description: Error en los datos proporcionados
+ */
+
+/**
+ * @swagger
+ * /encargados:
+ *   patch:
+ *     summary: Actualizar un encargado existente
+ *     description: Actualiza un encargado según el ID proporcionado
+ *     tags: [Encargados]
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         description: ID del encargado
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               estudio:
+ *                 type: string
+ *               turno:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Encargado actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de éxito
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     nombre:
+ *                       type: string
+ *                     estudio:
+ *                       type: string
+ *                     turno:
+ *                       type: string
+ *       400:
+ *         description: Error en los datos proporcionados
+ *       404:
+ *         description: Encargado no encontrado
+ */
+
+/**
+ * @swagger
+ * /encargados:
+ *   delete:
+ *     summary: Eliminar un encargado
+ *     description: Elimina un encargado específico utilizando su ID
+ *     tags: [Encargados]
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         description: ID del encargado a eliminar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Encargado eliminado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de éxito
+ *       400:
+ *         description: Error en los datos proporcionados
+ *       404:
+ *         description: Encargado no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+
 module.exports = router;
