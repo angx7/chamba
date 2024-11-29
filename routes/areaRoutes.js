@@ -5,10 +5,14 @@ const service = new areasService();
 
 router.get('/', async (req, res) => {
   const { id } = req.query;
-  const areas = id ? await service.getById(id) : await service.getAll();
-  if (areas) {
-    res.status(200).json(areas);
-  } else {
+  try {
+    const areas = id ? await service.getById(id) : await service.getAll();
+    if (areas) {
+      res.status(200).json(areas);
+    } else {
+      res.status(404).json({ message: 'No se encontraron áreas ' });
+    }
+  } catch (error) {
     res.status(404).json({ message: 'No se encontraron áreas ' });
   }
 });

@@ -5,11 +5,15 @@ const service = new encargadosService();
 
 router.get('/', async (req, res) => {
   const { id } = req.query;
-  const encargados = id ? await service.getById(id) : await service.getAll();
-  if (encargados) {
-    res.status(200).json(encargados);
-  } else {
-    res.status(404).json({ message: 'No hay un encargado con ese ID' });
+  try {
+    const encargados = id ? await service.getById(id) : await service.getAll();
+    if (encargados) {
+      res.status(200).json(encargados);
+    } else {
+      res.status(404).json({ message: 'No hay un encargado con ese ID' });
+    }
+  } catch (error) {
+    res.status(404).json({ message: 'No se encontraron áreas ' });
   }
 });
 
