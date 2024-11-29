@@ -1,34 +1,15 @@
-const encargados = require('../lib/encargadoLib');
-
-const departamentos = require('../services/departamentoService');
-const departamentosService = new departamentos();
+const encargados = require('../models/encargado');
 
 class encargadosService {
-  constructor() {
-    this.encargados = [];
-    this.crearEncargados();
+  async getAll() {
+    return await encargados.find();
   }
 
-  crearEncargados() {
-    for (let index = 0; index < encargados.length; index++) {
-      this.encargados.push({
-        idEncargado: index,
-        nombre: encargados[index].nombre,
-        estudio: encargados[index].estudio,
-        turno: encargados[index].turno,
-      });
-    }
+  async getById(id) {
+    return await encargados.findOne({ _id: id });
   }
 
-  getAll() {
-    return this.encargados;
-  }
-
-  getById(id) {
-    return this.encargados.find((item) => item.idEncargado == id);
-  }
-
-  createEncargado(nuevoEncargado) {
+  async createEncargado(nuevoEncargado) {
     if (
       !nuevoEncargado.nombre ||
       !nuevoEncargado.estudio ||
@@ -36,19 +17,19 @@ class encargadosService {
     ) {
       throw new Error('El cuerpo del nuevo encargado no está completo');
     }
-    const idEncargado = this.encargados.length;
-    const encargado = {
-      idEncargado,
+
+    const encargado = new encargados({
       nombre: nuevoEncargado.nombre,
       estudio: nuevoEncargado.estudio,
       turno: nuevoEncargado.turno,
-    };
-    this.encargados.push(encargado);
+    });
+
+    await encargado.save();
     return encargado;
   }
 
-  updateEncargado(id, updatedFields) {
-    const encargado = this.getById(id);
+  async updateEncargado(id, updatedFields) {
+    const encargado = await this.getById(id);
     if (!encargado) {
       throw new Error(`El encargado con ID ${id} no existe`);
     }
@@ -79,28 +60,27 @@ class encargadosService {
       encargado.turno = turno;
     }
 
+    await encargado.save();
     return encargado;
   }
 
-  delete(id) {
-    const encargado = this.getById(id);
+  async delete(id) {
+    const encargado = await this.getById(id);
     if (!encargado) {
       throw new Error(`El encargado con ID ${id} no existe`);
     }
-    const encargadoAsignado = departamentosService
-      .getAll()
-      .some((departamento) => departamento.encargado.id == id);
-    if (encargadoAsignado) {
-      throw new Error(
-        'No se puede eliminar a este encargado porque esta asignado a un departamento',
-      );
-    }
-    const index = this.encargados.findIndex(
-      (encargado) => encargado.idEncargado == id,
-    );
-    if (index !== -1) {
-      this.encargados.splice(index, 1);
-    }
+
+    // const encargadoAsignado = await Departamento.findOne({
+    //   'encargado.id': id,
+    // });
+
+    // if (encargadoAsignado) {
+    //   throw new Error(
+    //     'No se puede eliminar a este encargado porque está asignado a un departamento',
+    //   );
+    // }
+
+    await encargados.deleteOne({ _id: id });
     return { id };
   }
 }

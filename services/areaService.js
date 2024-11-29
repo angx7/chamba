@@ -1,48 +1,32 @@
-const areas = require('../lib/areaLib');
+const areas = require('../models/area');
 
 class areasService {
-  constructor() {
-    this.areas = [];
-    this.crearAreas();
+  async getAll() {
+    return await areas.find();
   }
 
-  crearAreas() {
-    for (let index = 0; index < areas.length; index++) {
-      this.areas.push({
-        idArea: index,
-        nombre: areas[index],
-        edificio: Math.floor(Math.random() * 10) + 1,
-      });
-    }
+  async getById(id) {
+    return await areas.findOne({ _id: id });
   }
 
-  getAll() {
-    return this.areas;
-  }
-
-  getById(id) {
-    return this.areas.find((item) => item.idArea == id);
-  }
-
-  create(body) {
+  async create(body) {
     const { nombre, edificio } = body;
 
     if (!nombre || !edificio) {
       throw new Error('El cuerpo de la petición no esta completa');
     }
 
-    const newArea = {
-      idArea: this.areas.length,
-      nombre,
-      edificio,
-    };
+    const newArea = new areas({
+      nombre: nombre,
+      edificio: edificio,
+    });
 
-    this.areas.push(newArea);
+    await newArea.save();
     return newArea;
   }
 
-  update(id, body) {
-    const area = this.getById(id);
+  async update(id, body) {
+    const area = await this.getById(id);
     if (!area) {
       throw new Error(`El área con ID ${id} no existe.`);
     }
@@ -63,33 +47,26 @@ class areasService {
       area.edificio = edificio;
     }
 
+    await area.save();
     return area;
   }
 
-  delete(id) {
-    const area = this.getById(id);
+  async delete(id) {
+    const area = await this.getById(id);
     if (!area) {
       throw new Error(`El área con ID ${id} no existe.`);
     }
 
-    const departamento = require('../services/departamentoService');
-    const departamentosService = new departamento();
-    const areaAsignada = departamentosService.getAll().some((area) => {
-      return area.area.clave == id;
-    });
+    // const Departamento = require('../models/departamento');
+    // const areaAsignada = await Departamento.findOne({ 'area.clave': id });
 
-    if (areaAsignada) {
-      throw new Error(
-        'No se puede eliminar esta área porque hay departamentos en ella',
-      );
-    }
+    // if (areaAsignada) {
+    //   throw new Error(
+    //     'No se puede eliminar esta área porque hay departamentos en ella',
+    //   );
+    // }
 
-    const index = this.areas.findIndex((area) => area.idArea == id);
-
-    if (index !== -1) {
-      this.areas.splice(index, 1);
-    }
-
+    await areas.deleteOne({ _id: id });
     return { id };
   }
 }

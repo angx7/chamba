@@ -3,9 +3,9 @@ const router = express.Router();
 const encargadosService = require('../services/encargadosService');
 const service = new encargadosService();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const { id } = req.query;
-  const encargados = id ? service.getById(id) : service.getAll();
+  const encargados = id ? await service.getById(id) : await service.getAll();
   if (encargados) {
     res.status(200).json(encargados);
   } else {
@@ -13,21 +13,26 @@ router.get('/', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body;
   try {
-    service.createEncargado(body);
-    res.status(201).json({ message: 'Encargado creado', data: body });
+    const newEncargado = await service.createEncargado(body);
+    res.status(201).json({ message: 'Encargado creado', data: newEncargado });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
-router.patch('/', (req, res) => {
+router.patch('/', async (req, res) => {
   const { id } = req.query;
   const body = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: 'El parámetro id es requerido.' });
+  }
+
   try {
-    service.updateEncargado(id, body);
+    const updatedEncargado = await service.updateEncargado(id, body);
     res.status(200).json({ message: 'Encargado actualizado', data: body });
   } catch (error) {
     if (error.message.includes('no existe')) {
@@ -38,10 +43,15 @@ router.patch('/', (req, res) => {
   }
 });
 
-router.delete('/', (req, res) => {
+router.delete('/', async (req, res) => {
   const { id } = req.query;
+
+  if (!id) {
+    return res.status(400).json({ message: 'El parámetro id es requerido.' });
+  }
+
   try {
-    service.delete(id);
+    await service.delete(id);
     res.status(200).json({ message: 'Encargado eliminado correctamente ' });
   } catch (error) {
     if (error.message.includes('no existe')) {
