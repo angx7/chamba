@@ -1,4 +1,4 @@
-const encargados = require('../models/encargado');
+const { encargados } = require('../models/encargado');
 
 class encargadosService {
   async getAll() {

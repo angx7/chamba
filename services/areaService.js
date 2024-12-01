@@ -1,4 +1,4 @@
-const areas = require('../models/area');
+const { areas } = require('../models/area');
 
 class areasService {
   async getAll() {

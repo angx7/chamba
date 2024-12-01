@@ -3,20 +3,26 @@ const router = express.Router();
 const departamentosService = require('../services/departamentoService');
 const service = new departamentosService();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const { id } = req.query;
-  const departamentos = id ? service.getById(id) : service.getAll();
-  if (departamentos) {
-    res.status(200).json(departamentos);
-  } else {
-    res.status(404).json({ message: 'No hay un departamentos con ese ID' });
+  try {
+    const departamentos = id
+      ? await service.getById(id)
+      : await service.getAll();
+    if (departamentos) {
+      res.status(200).json(departamentos);
+    } else {
+      res.status(404).json({ message: 'No se encontraron departamentos' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const newDepto = req.body;
   try {
-    const nuevo = service.createDepto(newDepto);
+    const nuevo = await service.createDepto(newDepto);
     res.status(201).json({ message: 'Departamento creado', data: nuevo });
   } catch (error) {
     if (error.message.includes('no existe')) {
@@ -29,12 +35,19 @@ router.post('/', (req, res) => {
   }
 });
 
-router.patch('/', (req, res) => {
+router.patch('/', async (req, res) => {
   const { id } = req.query;
   const body = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: 'El parámetro id es requerido.' });
+  }
+
   try {
-    service.modificarDepto(id, body);
-    res.status(200).json({ message: 'Departamento actualizado', data: body });
+    const updatedDepartamento = await service.modificarDepto(id, body);
+    res
+      .status(200)
+      .json({ message: 'Departamento actualizado', data: updatedDepartamento });
   } catch (error) {
     if (error.message.includes('no existe')) {
       res.status(404).json({ message: error.message });
@@ -46,10 +59,15 @@ router.patch('/', (req, res) => {
   }
 });
 
-router.delete('/', (req, res) => {
+router.delete('/', async (req, res) => {
   const { id } = req.query;
+
+  if (!id) {
+    return res.status(400).json({ message: 'El parámetro id es requerido.' });
+  }
+
   try {
-    service.delete(parseInt(id, 10));
+    await service.delete(id);
     res.status(200).json({ message: 'Departamento eliminado exitosamente' });
   } catch (error) {
     if (error.message.includes('no existe')) {
@@ -97,7 +115,7 @@ router.delete('/', (req, res) => {
  *                  type: object
  *                  properties:
  *                    id:
- *                      type: number
+ *                      type: string
  *                    nombre:
  *                      type: string
  *                    estudio:
@@ -110,7 +128,7 @@ router.delete('/', (req, res) => {
  *                    nombre:
  *                      type: string
  *                    clave:
- *                      type: number
+ *                      type: string
  *       404:
  *         description: No se encontraron departamentos
  */
@@ -135,7 +153,7 @@ router.delete('/', (req, res) => {
  *                 type: object
  *                 properties:
  *                   id:
- *                     type: number
+ *                     type: string
  *                   nombre:
  *                     type: string
  *                   estudio:
@@ -148,7 +166,7 @@ router.delete('/', (req, res) => {
  *                   nombre:
  *                     type: string
  *                   clave:
- *                     type: number
+ *                     type: string
  *     responses:
  *       201:
  *         description: Departamento creado exitosamente
@@ -168,7 +186,7 @@ router.delete('/', (req, res) => {
  *                       type: object
  *                       properties:
  *                         id:
- *                           type: number
+ *                           type: string
  *                         nombre:
  *                           type: string
  *                         estudio:
@@ -181,7 +199,7 @@ router.delete('/', (req, res) => {
  *                         nombre:
  *                           type: string
  *                         clave:
- *                           type: number
+ *                           type: string
  *       400:
  *         description: Error en los datos proporcionados
  *       404:
@@ -215,7 +233,7 @@ router.delete('/', (req, res) => {
  *                 type: object
  *                 properties:
  *                   id:
- *                     type: number
+ *                     type: string
  *                   nombre:
  *                     type: string
  *                   estudio:
@@ -228,7 +246,7 @@ router.delete('/', (req, res) => {
  *                   nombre:
  *                     type: string
  *                   clave:
- *                     type: number
+ *                     type: string
  *     responses:
  *       200:
  *         description: Departamento actualizado
@@ -248,7 +266,7 @@ router.delete('/', (req, res) => {
  *                       type: object
  *                       properties:
  *                         id:
- *                           type: number
+ *                           type: string
  *                         nombre:
  *                           type: string
  *                         estudio:
@@ -261,7 +279,7 @@ router.delete('/', (req, res) => {
  *                         nombre:
  *                           type: string
  *                         clave:
- *                           type: number
+ *                           type: string
  *       400:
  *         description: Error en los datos proporcionados
  *       404:

@@ -8,4 +8,4 @@ const encargadoSchema = mongoose.Schema({
 
 const encargados = mongoose.model('encargados', encargadoSchema);
 
-module.exports = encargados;
+module.exports = { encargados, encargadoSchema };
