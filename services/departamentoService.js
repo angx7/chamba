@@ -39,6 +39,7 @@ class departamentosService {
       if (!mongoose.Types.ObjectId.isValid(area.clave)) {
         throw new Error('El ID del área no es válido.');
       }
+
       const areaExists = await areas.findOne({
         _id: area.clave,
         nombre: area.nombre,
@@ -52,6 +53,14 @@ class departamentosService {
         _id: encargado.id,
         nombre: encargado.nombre,
       });
+
+      if (!areaExists) {
+        throw new Error('El área no existe.');
+      }
+
+      if (!encargadoExists) {
+        throw new Error('El encargado no existe.');
+      }
 
       // Crear el nuevo departamento
       const nuevoDepartamento = new departamentos({
@@ -106,6 +115,14 @@ class departamentosService {
       nombre: encargado.nombre,
     });
 
+    if (!areaExists) {
+      throw new Error('El área no existe.');
+    }
+
+    if (!encargadoExists) {
+      throw new Error('El encargado no existe.');
+    }
+
     // Actualizar el departamento
     departamento.nombre = updatedDepto.nombre;
     departamento.encargado = encargado.id;
@@ -135,6 +152,7 @@ class departamentosService {
         { departamento_3: id },
       ],
     });
+
     console.log(empleadoAsignado);
     if (empleadoAsignado) {
       throw new Error(

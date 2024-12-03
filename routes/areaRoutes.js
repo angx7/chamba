@@ -45,10 +45,10 @@ router.patch('/', async (req, res) => {
       res.status(404).json({ message: 'No se encontro el área' });
     } else if (error.message.includes('campo Nombre no puede estar vacío')) {
       res.status(400).json({ message: error.message });
+    } else if (error.message.includes('ya tiene un área asignada')) {
+      res.status(400).json({ message: error.message });
     } else {
-      res
-        .status(500)
-        .json({ message: 'Error interno del servidor', error: error.message });
+      res.status(500).json({ message: 'Error interno del servidor' });
     }
   }
 });

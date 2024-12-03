@@ -20,6 +20,12 @@ class areasService {
       throw new Error('El cuerpo de la petición no esta completa');
     }
 
+    const areaExistente = await areas.findOne({ edificio: edificio });
+
+    if (areaExistente) {
+      throw new Error('El edificio ya tiene un área asignada');
+    }
+
     const newArea = new areas({
       nombre: nombre,
       edificio: edificio,
@@ -41,6 +47,12 @@ class areasService {
 
     const { nombre, edificio } = body;
 
+    const areaExistente = await areas.findOne({ edificio: edificio });
+
+    if (areaExistente && areaExistente._id != id) {
+      throw new Error('El edificio ya tiene un área asignada');
+    }
+
     if (nombre !== undefined) {
       if (nombre.trim() === '') {
         throw new Error('El campo nombre no puede estar vacío.');
@@ -60,7 +72,7 @@ class areasService {
   }
 
   async delete(id) {
-    if (mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error('no existe');
     }
 

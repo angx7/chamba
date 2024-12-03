@@ -1,41 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const empleados = [];
-const empleadosService = require('../services/empleadoService');
-const service = new empleadosService();
+const empleadoService = require('../services/empleadoService');
+const service = new empleadoService();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const { id } = req.query;
-
-  const empleados = id ? service.getById(id) : service.getAll();
-  if (empleados) {
-    res.status(200).json(empleados);
-  } else {
-    res.status(404).json({ message: 'No hay un empleado con ese ID' });
+  try {
+    const empleados = id ? await service.getById(id) : await service.getAll();
+    if (empleados) {
+      res.status(200).json(empleados);
+    } else {
+      res.status(404).json({ message: 'No hay un empleado con ese ID' });
+    }
+  } catch (e) {
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const nuevoEmpleado = req.body;
   try {
-    const createEmpleado = service.agregarEmpleado(nuevoEmpleado);
+    const createEmpleado = await service.agregarEmpleado(nuevoEmpleado);
     res.status(201).json({ message: 'Empleado creado ', data: createEmpleado });
   } catch (error) {
     if (error.message.includes('no existe')) {
       res.status(404).json({ message: error.message });
     } else if (error.message.includes('Algo salio')) {
       res.status(400).json({ message: error.message });
+    } else if (error.message.includes('departamento')) {
+      res.status(404).json({ message: error.message });
     } else {
       res.status(500).json({ message: 'Error interno del servidor' });
     }
   }
 });
 
-router.patch('/', (req, res) => {
+router.patch('/', async (req, res) => {
   const { id } = req.query;
   const datosActualizados = req.body;
   try {
-    const empleadoActualizado = service.modificarEmpleado(
+    const empleadoActualizado = await service.modificarEmpleado(
       id,
       datosActualizados,
     );
@@ -55,9 +59,9 @@ router.patch('/', (req, res) => {
   }
 });
 
-router.delete('/', (req, res) => {
+router.delete('/', async (req, res) => {
   const { id } = req.query;
-  const eliminar = service.delete(id);
+  const eliminar = await service.delete(id);
   if (eliminar !== -1) {
     res.status(200).json({ message: 'Se ha eliminado correctamente' });
   } else {
