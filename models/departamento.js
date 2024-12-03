@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { areaSchema } = require('./area');
-const { encargadoSchema } = require('./encargado');
 
 const departamentoSchema = mongoose.Schema({
   nombre: { type: String, required: true },
@@ -11,4 +9,4 @@ const departamentoSchema = mongoose.Schema({
 
 const departamentos = mongoose.model('departamentos', departamentoSchema);
 
-module.exports = departamentos;
+module.exports = { departamentos, departamentoSchema };

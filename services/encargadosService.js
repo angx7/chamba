@@ -1,4 +1,5 @@
 const { encargados } = require('../models/encargado');
+const mongoose = require('mongoose');
 
 class encargadosService {
   async getAll() {
@@ -6,7 +7,10 @@ class encargadosService {
   }
 
   async getById(id) {
-    return await encargados.findOne({ _id: id });
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return await encargados.findOne({ _id: id });
+    }
+    return null;
   }
 
   async createEncargado(nuevoEncargado) {
@@ -29,7 +33,12 @@ class encargadosService {
   }
 
   async updateEncargado(id, updatedFields) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('El ID proporcionado no es válido');
+    }
+
     const encargado = await this.getById(id);
+
     if (!encargado) {
       throw new Error(`El encargado con ID ${id} no existe`);
     }
@@ -65,20 +74,25 @@ class encargadosService {
   }
 
   async delete(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('El ID proporcionado no es válido');
+    }
+
     const encargado = await this.getById(id);
     if (!encargado) {
       throw new Error(`El encargado con ID ${id} no existe`);
     }
 
-    // const encargadoAsignado = await Departamento.findOne({
-    //   'encargado.id': id,
-    // });
-
-    // if (encargadoAsignado) {
-    //   throw new Error(
-    //     'No se puede eliminar a este encargado porque está asignado a un departamento',
-    //   );
-    // }
+    const { departamentos } = require('../models/departamento');
+    const encargadoAsignado = await departamentos.findOne({
+      encargado: id,
+    });
+    console.log(encargadoAsignado);
+    if (encargadoAsignado) {
+      throw new Error(
+        'No se puede eliminar a este encargado porque está asignado a un departamento',
+      );
+    }
 
     await encargados.deleteOne({ _id: id });
     return { id };

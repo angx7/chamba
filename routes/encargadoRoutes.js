@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
       res.status(404).json({ message: 'No hay un encargado con ese ID' });
     }
   } catch (error) {
-    res.status(404).json({ message: 'No se encontraron áreas ' });
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
 
@@ -37,7 +37,9 @@ router.patch('/', async (req, res) => {
 
   try {
     const updatedEncargado = await service.updateEncargado(id, body);
-    res.status(200).json({ message: 'Encargado actualizado', data: body });
+    res
+      .status(200)
+      .json({ message: 'Encargado actualizado', data: updatedEncargado });
   } catch (error) {
     if (error.message.includes('no existe')) {
       res.status(404).json({ message: error.message });

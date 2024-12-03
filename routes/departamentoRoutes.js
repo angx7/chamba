@@ -29,6 +29,8 @@ router.post('/', async (req, res) => {
       res.status(404).json({ message: error.message });
     } else if (error.message.includes('incompleto')) {
       res.status(400).json({ message: error.message });
+    } else if (error.message.includes('área o el encargado')) {
+      res.status(404).json({ message: error.message });
     } else {
       res.status(500).json({ message: 'Error interno del servidor' });
     }
@@ -53,6 +55,8 @@ router.patch('/', async (req, res) => {
       res.status(404).json({ message: error.message });
     } else if (error.message.includes('incompleto')) {
       res.status(400).json({ message: error.message });
+    } else if (error.message.includes('área o el encargado')) {
+      res.status(404).json({ message: error.message });
     } else {
       res.status(500).json({ message: 'Error interno del servidor' });
     }
@@ -156,10 +160,6 @@ router.delete('/', async (req, res) => {
  *                     type: string
  *                   nombre:
  *                     type: string
- *                   estudio:
- *                     type: string
- *                   turno:
- *                     type: string
  *               area:
  *                 type: object
  *                 properties:
@@ -235,10 +235,6 @@ router.delete('/', async (req, res) => {
  *                   id:
  *                     type: string
  *                   nombre:
- *                     type: string
- *                   estudio:
- *                     type: string
- *                   turno:
  *                     type: string
  *               area:
  *                 type: object

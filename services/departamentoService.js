@@ -1,6 +1,7 @@
-const departamentos = require('../models/departamento');
+const { departamentos } = require('../models/departamento');
 const { encargados } = require('../models/encargado');
 const { areas } = require('../models/area');
+const mongoose = require('mongoose');
 
 class departamentosService {
   async getAll() {
@@ -8,7 +9,12 @@ class departamentosService {
   }
 
   async getById(id) {
-    return await departamentos.findOne({ _id: id }).populate('encargado area');
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return await departamentos
+        .findOne({ _id: id })
+        .populate('encargado area');
+    }
+    return null;
   }
 
   async createDepto(newDepto) {
@@ -19,12 +25,7 @@ class departamentosService {
       }
       // Validar que el encargado tenga el cuerpo correcto
       const encargado = newDepto.encargado;
-      if (
-        !encargado.id ||
-        !encargado.nombre ||
-        !encargado.estudio ||
-        !encargado.turno
-      ) {
+      if (!encargado.id || !encargado.nombre) {
         throw new Error('El cuerpo del encargado está incompleto.');
       }
 
@@ -35,19 +36,22 @@ class departamentosService {
       }
 
       // Validar que el área y el encargado existan
+      if (!mongoose.Types.ObjectId.isValid(area.clave)) {
+        throw new Error('El ID del área no es válido.');
+      }
       const areaExists = await areas.findOne({
         _id: area.clave,
         nombre: area.nombre,
       });
-      const encargadoExists = await encargados.findOne({ _id: encargado.id });
 
-      if (!areaExists) {
-        throw new Error('El área especificada no existe.');
+      if (!mongoose.Types.ObjectId.isValid(encargado.id)) {
+        throw new Error('El ID del encargado no es válido.');
       }
 
-      if (!encargadoExists) {
-        throw new Error('El encargado especificado no existe.');
-      }
+      const encargadoExists = await encargados.findOne({
+        _id: encargado.id,
+        nombre: encargado.nombre,
+      });
 
       // Crear el nuevo departamento
       const nuevoDepartamento = new departamentos({
@@ -66,19 +70,16 @@ class departamentosService {
   }
 
   async modificarDepto(id, updatedDepto) {
-    const departamento = await this.getById(id);
-    if (!departamento) {
+    let departamento;
+    try {
+      departamento = await this.getById(id);
+    } catch (error) {
       throw new Error(`El departamento con ID ${id} no existe.`);
     }
 
     // Validar que el encargado tenga el cuerpo correcto
     const encargado = updatedDepto.encargado;
-    if (
-      !encargado.id ||
-      !encargado.nombre ||
-      !encargado.estudio ||
-      !encargado.turno
-    ) {
+    if (!encargado.id || !encargado.nombre) {
       throw new Error('El cuerpo del encargado está incompleto.');
     }
 
@@ -89,19 +90,21 @@ class departamentosService {
     }
 
     // Validar que el área y el encargado existan
+    if (!mongoose.Types.ObjectId.isValid(area.clave)) {
+      throw new Error('El ID del área no es válido.');
+    }
     const areaExists = await areas.findOne({
       _id: area.clave,
       nombre: area.nombre,
     });
-    const encargadoExists = await encargados.findOne({ _id: encargado.id });
 
-    if (!areaExists) {
-      throw new Error('El área especificada no existe.');
+    if (!mongoose.Types.ObjectId.isValid(encargado.id)) {
+      throw new Error('El ID del encargado no es válido.');
     }
-
-    if (!encargadoExists) {
-      throw new Error('El encargado especificado no existe.');
-    }
+    const encargadoExists = await encargados.findOne({
+      _id: encargado.id,
+      nombre: encargado.nombre,
+    });
 
     // Actualizar el departamento
     departamento.nombre = updatedDepto.nombre;
@@ -114,23 +117,30 @@ class departamentosService {
   }
 
   async delete(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('El ID del departamento no es válido.');
+    }
+
     const departamento = await this.getById(id);
+
     if (!departamento) {
       throw new Error(`El departamento con ID ${id} no existe.`);
     }
 
-    // const empleados = require('../models/empleado');
-    // const empleadoAsignado = await empleados.findOne({
-    //   $or: [
-    //     { 'departamento_1.clave': id },
-    //     { 'departamento_2.clave': id },
-    //     { 'departamento_3.clave': id },
-    //   ],
-    // });
-
-    // if (empleadoAsignado) {
-    //   throw new Error('No se puede eliminar el departamento porque hay empleados asignados a él.');
-    // }
+    const { empleados } = require('../models/empleado');
+    const empleadoAsignado = await empleados.findOne({
+      $or: [
+        { departamento_1: id },
+        { departamento_2: id },
+        { departamento_3: id },
+      ],
+    });
+    console.log(empleadoAsignado);
+    if (empleadoAsignado) {
+      throw new Error(
+        'No se puede eliminar el departamento porque hay empleados asignados a él.',
+      );
+    }
 
     await departamentos.deleteOne({ _id: id });
 

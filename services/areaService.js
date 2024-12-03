@@ -1,4 +1,5 @@
 const { areas } = require('../models/area');
+const mongoose = require('mongoose');
 
 class areasService {
   async getAll() {
@@ -6,7 +7,10 @@ class areasService {
   }
 
   async getById(id) {
-    return await areas.findOne({ _id: id });
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return await areas.findOne({ _id: id });
+    }
+    return null;
   }
 
   async create(body) {
@@ -26,9 +30,13 @@ class areasService {
   }
 
   async update(id, body) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('no existe');
+    }
     const area = await this.getById(id);
+
     if (!area) {
-      throw new Error(`El área con ID ${id} no existe.`);
+      throw new Error('no existe');
     }
 
     const { nombre, edificio } = body;
@@ -52,19 +60,24 @@ class areasService {
   }
 
   async delete(id) {
-    const area = await this.getById(id);
-    if (!area) {
-      throw new Error(`El área con ID ${id} no existe.`);
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('no existe');
     }
 
-    // const Departamento = require('../models/departamento');
-    // const areaAsignada = await Departamento.findOne({ 'area.clave': id });
+    const area = await this.getById(id);
 
-    // if (areaAsignada) {
-    //   throw new Error(
-    //     'No se puede eliminar esta área porque hay departamentos en ella',
-    //   );
-    // }
+    if (!area) {
+      throw new Error('no existe');
+    }
+
+    const { departamentos } = require('../models/departamento');
+    const areaAsignada = await departamentos.findOne({ area: id });
+    console.log(areaAsignada);
+    if (areaAsignada) {
+      throw new Error(
+        'No se puede eliminar esta área porque hay departamentos en ella',
+      );
+    }
 
     await areas.deleteOne({ _id: id });
     return { id };

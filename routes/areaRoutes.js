@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
       res.status(404).json({ message: 'No se encontraron áreas ' });
     }
   } catch (error) {
-    res.status(404).json({ message: 'No se encontraron áreas ' });
+    res.status(505).json({ message: 'Erorr en el servidor ' });
   }
 });
 
@@ -42,7 +42,7 @@ router.patch('/', async (req, res) => {
       .json({ message: 'Área actualizada', data: areaActualizada });
   } catch (error) {
     if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
+      res.status(404).json({ message: 'No se encontro el área' });
     } else if (error.message.includes('campo Nombre no puede estar vacío')) {
       res.status(400).json({ message: error.message });
     } else {
@@ -59,7 +59,6 @@ router.delete('/', async (req, res) => {
   if (!id) {
     return res.status(400).json({ message: 'El parámetro id es requerido.' });
   }
-
   try {
     await service.delete(id);
     res.status(200).json({ message: 'El área fue eliminada correctamente ' });
