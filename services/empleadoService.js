@@ -50,7 +50,7 @@ class empleadoService {
 
     const departamento_1Existe = await departamentos.findOne({
       _id: nuevoEmpleado.departamento_1.clave,
-      mombre: nuevoEmpleado.departamento_1.nombre,
+      nombre: nuevoEmpleado.departamento_1.nombre,
     });
 
     if (!departamento_1Existe) {
@@ -70,7 +70,7 @@ class empleadoService {
       throw new Error('departamento_2 no existe');
     }
 
-    if (mongoose.Types.ObjectId.isValid(nuevoEmpleado.departamento_3.clave)) {
+    if (!mongoose.Types.ObjectId.isValid(nuevoEmpleado.departamento_3.clave)) {
       throw new Error('departamento_3 no existe');
     }
 
@@ -100,8 +100,8 @@ class empleadoService {
   }
 
   async modificarEmpleado(id, datosActualizados) {
-    if (mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('ID no valido');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('El empleado no existe');
     }
 
     const empleado = await this.getById(id);
@@ -142,13 +142,13 @@ class empleadoService {
       datosActualizados.departamento_1.nombre
     ) {
       if (
-        mongoose.Types.ObjectId.isValid(datosActualizados.departamento_1.clave)
+        !mongoose.Types.ObjectId.isValid(datosActualizados.departamento_1.clave)
       ) {
         throw new Error('departamento_1 no existe');
       }
 
       const departamento_1Existe = await departamentos.findOne({
-        _id: id,
+        _id: datosActualizados.departamento_1.clave,
         nombre: datosActualizados.departamento_1.nombre,
       });
 
@@ -164,13 +164,13 @@ class empleadoService {
       datosActualizados.departamento_2.nombre
     ) {
       if (
-        mongoose.Types.ObjectId.isValid(datosActualizados.departamento_2.clave)
+        !mongoose.Types.ObjectId.isValid(datosActualizados.departamento_2.clave)
       ) {
         throw new Error('departamento_2 no existe');
       }
 
       const departamento_2Existe = await departamentos.findOne({
-        _id: id,
+        _id: datosActualizados.departamento_2.clave,
         nombre: datosActualizados.departamento_2.nombre,
       });
 
@@ -186,13 +186,13 @@ class empleadoService {
       datosActualizados.departamento_3.nombre
     ) {
       if (
-        mongoose.Types.ObjectId.isValid(datosActualizados.departamento_3.clave)
+        !mongoose.Types.ObjectId.isValid(datosActualizados.departamento_3.clave)
       ) {
         throw new Error('departamento_3 no existe');
       }
 
       const departamento_3Existe = await departamentos.findOne({
-        _id: id,
+        _id: datosActualizados.departamento_3.clave,
         nombre: datosActualizados.departamento_3.nombre,
       });
 
@@ -209,7 +209,7 @@ class empleadoService {
   }
 
   async delete(id) {
-    if (mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error('El Id del empleado no existe');
     }
 

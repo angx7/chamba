@@ -84,7 +84,7 @@ class areasService {
 
     const { departamentos } = require('../models/departamento');
     const areaAsignada = await departamentos.findOne({ area: id });
-    console.log(areaAsignada);
+
     if (areaAsignada) {
       throw new Error(
         'No se puede eliminar esta área porque hay departamentos en ella',

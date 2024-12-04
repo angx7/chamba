@@ -149,7 +149,6 @@ class departamentosService {
       ],
     });
 
-    console.log(empleadoAsignado);
     if (empleadoAsignado) {
       throw new Error(
         'No se puede eliminar el departamento porque hay empleados asignados a él.',

@@ -87,7 +87,7 @@ class encargadosService {
     const encargadoAsignado = await departamentos.findOne({
       encargado: id,
     });
-    console.log(encargadoAsignado);
+
     if (encargadoAsignado) {
       throw new Error(
         'No se puede eliminar a este encargado porque está asignado a un departamento',
