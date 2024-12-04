@@ -43,7 +43,7 @@ router.patch('/', async (req, res) => {
   } catch (error) {
     if (error.message.includes('no existe')) {
       res.status(404).json({ message: 'No se encontro el área' });
-    } else if (error.message.includes('campo Nombre no puede estar vacío')) {
+    } else if (error.message.includes('campo nombre no puede estar vacío')) {
       res.status(400).json({ message: error.message });
     } else if (error.message.includes('ya tiene un área asignada')) {
       res.status(400).json({ message: error.message });

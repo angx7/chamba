@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const departamentosService = require('../services/departamentoService');
+const e = require('express');
 const service = new departamentosService();
 
 router.get('/', async (req, res) => {
@@ -29,10 +30,14 @@ router.post('/', async (req, res) => {
       res.status(404).json({ message: error.message });
     } else if (error.message.includes('incompleto')) {
       res.status(400).json({ message: error.message });
-    } else if (error.message.includes('área o el encargado')) {
+    } else if (error.message.includes('area o el encargado')) {
       res.status(404).json({ message: error.message });
+    } else if (error.message.includes('no es válido')) {
+      res.status(400).json({ message: error.message });
     } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
+      res
+        .status(500)
+        .json({ message: 'Error interno del servidor', error: error.message });
     }
   }
 });
@@ -57,6 +62,8 @@ router.patch('/', async (req, res) => {
       res.status(400).json({ message: error.message });
     } else if (error.message.includes('área o el encargado')) {
       res.status(404).json({ message: error.message });
+    } else if (error.message.includes('no es válido')) {
+      res.status(400).json({ message: error.message });
     } else {
       res.status(500).json({ message: 'Error interno del servidor' });
     }

@@ -37,12 +37,12 @@ class areasService {
 
   async update(id, body) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('no existe');
+      throw new Error('El id del area no existe');
     }
     const area = await this.getById(id);
 
     if (!area) {
-      throw new Error('no existe');
+      throw new Error('El id del area no existe');
     }
 
     const { nombre, edificio } = body;
@@ -73,13 +73,13 @@ class areasService {
 
   async delete(id) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('no existe');
+      throw new Error('El id del area no existe');
     }
 
     const area = await this.getById(id);
 
     if (!area) {
-      throw new Error('no existe');
+      throw new Error('El id del area no existe');
     }
 
     const { departamentos } = require('../models/departamento');

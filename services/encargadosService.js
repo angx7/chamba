@@ -34,7 +34,7 @@ class encargadosService {
 
   async updateEncargado(id, updatedFields) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('El ID proporcionado no es válido');
+      throw new Error('El ID proporcionado no existe');
     }
 
     const encargado = await this.getById(id);
@@ -75,7 +75,7 @@ class encargadosService {
 
   async delete(id) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('El ID proporcionado no es válido');
+      throw new Error('El ID proporcionado no existe');
     }
 
     const encargado = await this.getById(id);
