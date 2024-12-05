@@ -20,19 +20,19 @@ const swaggerDefinition = {
   tags: [
     {
       name: 'Areas',
-      description: 'Endpoints para productos',
+      description: 'Endpoints para areas',
     },
     {
       name: 'Departamentos',
-      description: 'Endpoints para marcas',
+      description: 'Endpoints para departamentos',
     },
     {
       name: 'Empleados',
-      description: 'Endpoints para categorías',
+      description: 'Endpoints para empleados',
     },
     {
       name: 'Encargados',
-      description: 'Endpoints para usuarios',
+      description: 'Endpoints para encargados',
     },
   ],
 };
