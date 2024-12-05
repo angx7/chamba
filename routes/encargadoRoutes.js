@@ -3,7 +3,7 @@ const router = express.Router();
 const encargadosService = require('../services/encargadosService');
 const service = new encargadosService();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   const { id } = req.query;
   try {
     const encargados = id ? await service.getById(id) : await service.getAll();
@@ -13,21 +13,21 @@ router.get('/', async (req, res) => {
       res.status(404).json({ message: 'No hay un encargado con ese ID' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor' });
+    next(error);
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const body = req.body;
   try {
     const newEncargado = await service.createEncargado(body);
     res.status(201).json({ message: 'Encargado creado', data: newEncargado });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 });
 
-router.patch('/', async (req, res) => {
+router.patch('/', async (req, res, next) => {
   const { id } = req.query;
   const body = req.body;
 
@@ -41,15 +41,11 @@ router.patch('/', async (req, res) => {
       .status(200)
       .json({ message: 'Encargado actualizado', data: updatedEncargado });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else {
-      res.status(400).json({ message: error.message });
-    }
+    next(error);
   }
 });
 
-router.delete('/', async (req, res) => {
+router.delete('/', async (req, res, next) => {
   const { id } = req.query;
 
   if (!id) {
@@ -60,13 +56,7 @@ router.delete('/', async (req, res) => {
     await service.delete(id);
     res.status(200).json({ message: 'Encargado eliminado correctamente ' });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('asignado a un departamento')) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
-    }
+    next(error);
   }
 });
 

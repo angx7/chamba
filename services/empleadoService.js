@@ -1,6 +1,8 @@
 const { empleados } = require('../models/empleado');
 const { departamentos } = require('../models/departamento');
 const mongoose = require('mongoose');
+const customError = require('../utils/customError');
+
 class empleadoService {
   async getAll() {
     return await empleados
@@ -14,7 +16,7 @@ class empleadoService {
         .findOne({ _id: id })
         .populate('departamento_1 departamento_2 departamento_3');
     }
-    return null;
+    throw new customError('El Id del empleado no existe', 404);
   }
 
   async agregarEmpleado(nuevoEmpleado) {
@@ -30,7 +32,10 @@ class empleadoService {
       !nuevoEmpleado.departamento_3.nombre ||
       !nuevoEmpleado.departamento_3.clave
     ) {
-      throw new Error('Algo salio mal porque faltan datos del empleado');
+      throw new customError(
+        'Algo salio mal porque faltan datos del empleado',
+        400,
+      );
     }
 
     if (
@@ -40,12 +45,12 @@ class empleadoService {
         nuevoEmpleado.departamento_3.clave ||
       nuevoEmpleado.departamento_2.clave === nuevoEmpleado.departamento_3.clave
     ) {
-      throw new Error('no puede tener 2 departamentos iguales');
+      throw new customError('no puede tener 2 departamentos iguales', 400);
     }
 
     // Validar que los departamentos tengan el cuerpo correcto
     if (!mongoose.Types.ObjectId.isValid(nuevoEmpleado.departamento_1.clave)) {
-      throw new Error('departamento_1 no existe');
+      throw new customError('departamento_1 no existe', 404);
     }
 
     const departamento_1Existe = await departamentos.findOne({
@@ -54,11 +59,11 @@ class empleadoService {
     });
 
     if (!departamento_1Existe) {
-      throw new Error('departamento_1 no existe');
+      throw new customError('departamento_1 no existe', 404);
     }
 
     if (!mongoose.Types.ObjectId.isValid(nuevoEmpleado.departamento_2.clave)) {
-      throw new Error('departamento_2 no existe');
+      throw new customError('departamento_2 no existe', 404);
     }
 
     const departamento_2Existe = await departamentos.findOne({
@@ -67,11 +72,11 @@ class empleadoService {
     });
 
     if (!departamento_2Existe) {
-      throw new Error('departamento_2 no existe');
+      throw new customError('departamento_2 no existe', 404);
     }
 
     if (!mongoose.Types.ObjectId.isValid(nuevoEmpleado.departamento_3.clave)) {
-      throw new Error('departamento_3 no existe');
+      throw new customError('departamento_3 no existe', 404);
     }
 
     const departamento_3Existe = await departamentos.findOne({
@@ -80,7 +85,7 @@ class empleadoService {
     });
 
     if (!departamento_3Existe) {
-      throw new Error('departamento_3 no existe');
+      throw new customError('departamento_3 no existe', 404);
     }
 
     const empleado = new empleados({
@@ -101,13 +106,13 @@ class empleadoService {
 
   async modificarEmpleado(id, datosActualizados) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('El empleado no existe');
+      throw new customError('El empleado no existe', 404);
     }
 
     const empleado = await this.getById(id);
 
     if (!empleado) {
-      throw new Error('El empleado no existe');
+      throw new customError('El empleado no existe', 404);
     }
 
     if (
@@ -118,7 +123,7 @@ class empleadoService {
       datosActualizados.departamento_2.clave ===
         datosActualizados.departamento_3.clave
     ) {
-      throw new Error('no puede tener 2 departamentos iguales');
+      throw new customError('no puede tener 2 departamentos iguales', 400);
     }
 
     if (datosActualizados.nombre) {
@@ -144,7 +149,7 @@ class empleadoService {
       if (
         !mongoose.Types.ObjectId.isValid(datosActualizados.departamento_1.clave)
       ) {
-        throw new Error('departamento_1 no existe');
+        throw new customError('departamento_1 no existe', 404);
       }
 
       const departamento_1Existe = await departamentos.findOne({
@@ -153,7 +158,7 @@ class empleadoService {
       });
 
       if (!departamento_1Existe) {
-        throw new Error('departamento_1 no existe');
+        throw new customError('departamento_1 no existe', 404);
       }
 
       empleado.departamento_1 = datosActualizados.departamento_1.clave;
@@ -166,7 +171,7 @@ class empleadoService {
       if (
         !mongoose.Types.ObjectId.isValid(datosActualizados.departamento_2.clave)
       ) {
-        throw new Error('departamento_2 no existe');
+        throw new customError('departamento_2 no existe', 404);
       }
 
       const departamento_2Existe = await departamentos.findOne({
@@ -175,7 +180,7 @@ class empleadoService {
       });
 
       if (!departamento_2Existe) {
-        throw new Error('departamento_2 no existe');
+        throw new customError('departamento_2 no existe', 404);
       }
 
       empleado.departamento_2 = datosActualizados.departamento_2.clave;
@@ -188,7 +193,7 @@ class empleadoService {
       if (
         !mongoose.Types.ObjectId.isValid(datosActualizados.departamento_3.clave)
       ) {
-        throw new Error('departamento_3 no existe');
+        throw new customError('departamento_3 no existe', 404);
       }
 
       const departamento_3Existe = await departamentos.findOne({
@@ -197,7 +202,7 @@ class empleadoService {
       });
 
       if (!departamento_3Existe) {
-        throw new Error('departamento_3 no existe');
+        throw new customError('departamento_3 no existe', 404);
       }
 
       empleado.departamento_3 = datosActualizados.departamento_3.clave;
@@ -210,13 +215,13 @@ class empleadoService {
 
   async delete(id) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('El Id del empleado no existe');
+      throw new customError('El Id del empleado no existe', 404);
     }
 
     const empleadoEliminar = await this.getById(id);
 
     if (!empleadoEliminar) {
-      throw new Error(`El empleado con ID ${id} no existe.`);
+      throw new customError(`El empleado con ID ${id} no existe.`, 404);
     }
 
     await empleados.deleteOne({ _id: id });

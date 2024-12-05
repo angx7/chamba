@@ -3,7 +3,7 @@ const router = express.Router();
 const empleadoService = require('../services/empleadoService');
 const service = new empleadoService();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   const { id } = req.query;
   try {
     const empleados = id ? await service.getById(id) : await service.getAll();
@@ -12,30 +12,22 @@ router.get('/', async (req, res) => {
     } else {
       res.status(404).json({ message: 'No hay un empleado con ese ID' });
     }
-  } catch (e) {
-    res.status(500).json({ message: 'Error interno del servidor' });
+  } catch (error) {
+    next(error);
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const nuevoEmpleado = req.body;
   try {
     const createEmpleado = await service.agregarEmpleado(nuevoEmpleado);
     res.status(201).json({ message: 'Empleado creado ', data: createEmpleado });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('Algo salio')) {
-      res.status(400).json({ message: error.message });
-    } else if (error.message.includes('departamento')) {
-      res.status(404).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
-    }
+    next(error);
   }
 });
 
-router.patch('/', async (req, res) => {
+router.patch('/', async (req, res, next) => {
   const { id } = req.query;
   const datosActualizados = req.body;
   try {
@@ -47,29 +39,17 @@ router.patch('/', async (req, res) => {
       .status(200)
       .json({ message: 'Empleado actualizado', data: empleadoActualizado });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('cuerpo correcto')) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res
-        .status(500)
-        .json({ message: 'Error interno del servidor', error: error.message });
-    }
+    next(error);
   }
 });
 
-router.delete('/', async (req, res) => {
+router.delete('/', async (req, res, next) => {
   const { id } = req.query;
   try {
     await service.delete(id);
     res.status(200).json({ message: 'Empleado eliminado existosamente' });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
-    }
+    next(error);
   }
 });
 

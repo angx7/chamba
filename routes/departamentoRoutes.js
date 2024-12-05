@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const departamentosService = require('../services/departamentoService');
-const e = require('express');
 const service = new departamentosService();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   const { id } = req.query;
   try {
     const departamentos = id
@@ -16,33 +15,21 @@ router.get('/', async (req, res) => {
       res.status(404).json({ message: 'No se encontraron departamentos' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor' });
+    next(error);
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const newDepto = req.body;
   try {
     const nuevo = await service.createDepto(newDepto);
     res.status(201).json({ message: 'Departamento creado', data: nuevo });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('incompleto')) {
-      res.status(400).json({ message: error.message });
-    } else if (error.message.includes('area o el encargado')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('no es válido')) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res
-        .status(500)
-        .json({ message: 'Error interno del servidor', error: error.message });
-    }
+    next(error);
   }
 });
 
-router.patch('/', async (req, res) => {
+router.patch('/', async (req, res, next) => {
   const { id } = req.query;
   const body = req.body;
 
@@ -56,21 +43,11 @@ router.patch('/', async (req, res) => {
       .status(200)
       .json({ message: 'Departamento actualizado', data: updatedDepartamento });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('incompleto')) {
-      res.status(400).json({ message: error.message });
-    } else if (error.message.includes('área o el encargado')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('no es válido')) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
-    }
+    next(error);
   }
 });
 
-router.delete('/', async (req, res) => {
+router.delete('/', async (req, res, next) => {
   const { id } = req.query;
 
   if (!id) {
@@ -81,13 +58,7 @@ router.delete('/', async (req, res) => {
     await service.delete(id);
     res.status(200).json({ message: 'Departamento eliminado exitosamente' });
   } catch (error) {
-    if (error.message.includes('no existe')) {
-      res.status(404).json({ message: error.message });
-    } else if (error.message.includes('hay empleados asignados')) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
-    }
+    next(error);
   }
 });
 

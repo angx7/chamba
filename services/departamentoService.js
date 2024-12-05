@@ -2,6 +2,7 @@ const { departamentos } = require('../models/departamento');
 const { encargados } = require('../models/encargado');
 const { areas } = require('../models/area');
 const mongoose = require('mongoose');
+const customError = require('../utils/customError');
 
 class departamentosService {
   async getAll() {
@@ -14,29 +15,32 @@ class departamentosService {
         .findOne({ _id: id })
         .populate('encargado area');
     }
-    return null;
+    throw new customError('El ID del departamento no existe.', 404);
   }
 
   async createDepto(newDepto) {
     // Validar que el cuerpo esté completo
     if (!newDepto.nombre || !newDepto.encargado || !newDepto.area) {
-      throw new Error('El cuerpo del nuevo departamento está incompleto.');
+      throw new customError(
+        'El cuerpo del nuevo departamento está incompleto.',
+        400,
+      );
     }
     // Validar que el encargado tenga el cuerpo correcto
     const encargado = newDepto.encargado;
     if (!encargado.id || !encargado.nombre) {
-      throw new Error('El cuerpo del encargado está incompleto.');
+      throw new customError('El cuerpo del encargado está incompleto.', 400);
     }
 
     // Validar que el área tenga el cuerpo correcto
     const area = newDepto.area;
     if (!area.nombre || area.clave === undefined) {
-      throw new Error('El cuerpo del área está incompleto.');
+      throw new customError('El cuerpo del área está incompleto.', 400);
     }
 
     // Validar que el área y el encargado existan
     if (!mongoose.Types.ObjectId.isValid(area.clave)) {
-      throw new Error('El ID del área no existe');
+      throw new customError('El ID del área no existe', 404);
     }
 
     const areaExists = await areas.findOne({
@@ -45,7 +49,7 @@ class departamentosService {
     });
 
     if (!mongoose.Types.ObjectId.isValid(encargado.id)) {
-      throw new Error('El ID del encargado no existe');
+      throw new customError('El ID del encargado no existe', 404);
     }
 
     const encargadoExists = await encargados.findOne({
@@ -54,11 +58,11 @@ class departamentosService {
     });
 
     if (!areaExists) {
-      throw new Error('El área no existe.');
+      throw new customError('El área no existe.', 404);
     }
 
     if (!encargadoExists) {
-      throw new Error('El encargado no existe.');
+      throw new customError('El encargado no existe.', 404);
     }
 
     // Crear el nuevo departamento
@@ -76,7 +80,7 @@ class departamentosService {
 
   async modificarDepto(id, updatedDepto) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('El ID del departamento no existe');
+      throw new customError('El ID del departamento no existe', 404);
     }
 
     const departamento = await this.getById(id);
@@ -84,18 +88,18 @@ class departamentosService {
     // Validar que el encargado tenga el cuerpo correcto
     const encargado = updatedDepto.encargado;
     if (!encargado.id || !encargado.nombre) {
-      throw new Error('El cuerpo del encargado está incompleto.');
+      throw new customError('El cuerpo del encargado está incompleto.', 400);
     }
 
     // Validar que el área tenga el cuerpo correcto
     const area = updatedDepto.area;
     if (!area.nombre || area.clave === undefined) {
-      throw new Error('El cuerpo del área está incompleto.');
+      throw new customError('El cuerpo del área está incompleto.', 400);
     }
 
     // Validar que el área y el encargado existan
     if (!mongoose.Types.ObjectId.isValid(area.clave)) {
-      throw new Error('El ID del área no existe');
+      throw new customError('El ID del área no existe', 404);
     }
 
     const areaExists = await areas.findOne({
@@ -104,7 +108,7 @@ class departamentosService {
     });
 
     if (!mongoose.Types.ObjectId.isValid(encargado.id)) {
-      throw new Error('El ID del encargado no existe');
+      throw new customError('El ID del encargado no existe', 404);
     }
     const encargadoExists = await encargados.findOne({
       _id: encargado.id,
@@ -112,11 +116,11 @@ class departamentosService {
     });
 
     if (!areaExists) {
-      throw new Error('El área no existe.');
+      throw new customError('El área no existe.', 404);
     }
 
     if (!encargadoExists) {
-      throw new Error('El encargado no existe.');
+      throw new customError('El encargado no existe.', 404);
     }
 
     // Actualizar el departamento
@@ -131,13 +135,13 @@ class departamentosService {
 
   async delete(id) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error('El ID del departamento no existe.');
+      throw new customError('El ID del departamento no existe.', 404);
     }
 
     const departamento = await this.getById(id);
 
     if (!departamento) {
-      throw new Error(`El departamento con ID ${id} no existe.`);
+      throw new customError(`El departamento con ID ${id} no existe.`, 404);
     }
 
     const { empleados } = require('../models/empleado');
@@ -150,8 +154,9 @@ class departamentosService {
     });
 
     if (empleadoAsignado) {
-      throw new Error(
+      throw new customError(
         'No se puede eliminar el departamento porque hay empleados asignados a él.',
+        400,
       );
     }
 
